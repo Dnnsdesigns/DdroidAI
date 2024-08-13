@@ -1,0 +1,17 @@
+FROM node:14-alpine
+
+WORKDIR /app
+
+# Install dependencies only (without development dependencies)
+COPY package*.json ./
+RUN npm install --production
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the React app
+RUN npm run build
+
+# Clean up unnecessary files and directories to reduce image size
+RUN npm uninstall --save-dev \
+    && rm -rf /app/src /app/public /app/node_modules /app/package*.json
